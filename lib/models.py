@@ -5,7 +5,7 @@
 # Base = declarative_base()
 
 # engine = create_engine('sqlite:///todo.db')
-# Base.metadata.create_all(engine)
+# Base.metadata.crcd eate_all(engine)
 
 # # list
 # class Task(Base):
