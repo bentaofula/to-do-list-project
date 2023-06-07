@@ -14,7 +14,7 @@ Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# list
+
 class Task(Base):
     __tablename__ = 'tasks'
     id = Column(Integer, primary_key=True)
@@ -39,8 +39,8 @@ def get_completed_tasks(tasks):
 categories = ['Work', 'Personal', 'Shopping']
 
 
-# dictionary
-class user(Base):
+
+class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     name = Column(String)
@@ -63,7 +63,7 @@ class user(Base):
         session.query(Task).filter(Task.customer == self, Task.category == category).delete()
         session.commit()
 
-# tuple
+
 class Category(Base):
     __tablename__ = 'categories'
     id = Column(Integer, primary_key=True)
