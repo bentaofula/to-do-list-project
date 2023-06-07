@@ -9,7 +9,7 @@ from sqlalchemy.orm import relationship, sessionmaker
 
 Base = declarative_base()
 
-engine = create_engine('sqlite:///todo.db')
+engine = create_engine('sqlite:///new_todo.db')
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -26,8 +26,11 @@ class Task(Base):
     category = relationship('Category', back_populates='tasks')
 
     def full_task(self):
-        return f"Task for {self.category.name} by {self.user.full_name()}: {self.star_rating} stars."
-
+        def full_task(self):
+         if self.category.star_rating:
+            return f"Task for {self.category.name} by {self.user.full_name()}: {self.category.star_rating} stars."
+         else:
+            return f"Task for {self.category.name} by {self.user.full_name()}"
 def get_tasks():
     tasks = Task.query.all()
     return tasks
@@ -43,6 +46,8 @@ categories = ['Work', 'Personal', 'Shopping']
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
+    first_name = Column(String)  # Add first_name attribute
+    last_name = Column(String)
     name = Column(String)
     tasks = relationship('Task', back_populates='user')
 
@@ -68,6 +73,7 @@ class Category(Base):
     __tablename__ = 'categories'
     id = Column(Integer, primary_key=True)
     name = Column(String)
+    star_rating = Column(Integer)  # Add star_rating attribut
     tasks = relationship('Task', back_populates='category')
 
     @classmethod
