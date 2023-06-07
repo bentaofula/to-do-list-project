@@ -11,21 +11,32 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(30))
     email = Column(String(30))
-    password_hash = Column(String(30))
+    password = Column(String(30))
 
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+# Define the Product table
+class Product(Base):
+    __tablename__ = 'products'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(30))
+    price = Column(Integer)
 
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+    def if_name_is_empty(self):
+        if self.product_name == "":
+            return True
+        else:
+            return False
+
+    def if_name_is_valid(self):
+        if self.product_name != self.product_name.capitalize():
+            return False 
+        else:
+            return True
+
 
     def __repr__(self):
-        return str(self.id)
+        return 'Product name - {}'.format(self.product_name)
 
-# @login.user_loader
-# def load_user(id):
-#     return Users.query.get(int(id))
-    
+
 
 engine = create_engine('sqlite:///todo_test.db')
 
