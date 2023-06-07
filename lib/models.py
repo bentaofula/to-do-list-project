@@ -1,11 +1,13 @@
-# from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
-# from sqlalchemy.ext.declarative import declarative_base
-# from sqlalchemy.orm import relationship
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 
-# Base = declarative_base()
+# from lib.models import Base
 
-# engine = create_engine('sqlite:///todo.db')
-# Base.metadata.crcd eate_all(engine)
+Base = declarative_base()
+
+engine = create_engine('sqlite:///todo_test.db')
+# Base.metadata.create_all(engine)
 
 # # list
 # class Task(Base):
