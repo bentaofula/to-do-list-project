@@ -61,7 +61,7 @@ class User(Base):
     
     def add_task(self, category, rating):
         review = Task(user=self, Category=category, star_rating=rating)
-        session.add(review)
+        session.add(Task)
         session.commit()
 
     def delete_tasks(self, category):
