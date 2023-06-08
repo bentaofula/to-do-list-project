@@ -18,27 +18,13 @@ session = Session()
 
 class Task(Base):
     __tablename__ = 'tasks'
-    id = Column(Integer, primary_key=True)
-    title = Column(String)
+    id = Column(Integer(), primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
-    category_id = Column(Integer, ForeignKey('categories.id'))
+    category_id = Column(Integer(), ForeignKey('categories.id'))
 
-    user = relationship('User', back_populates='tasks')
-    category = relationship('Category', back_populates='tasks')
-def full_task(self):
-    if self.category.star_rating:
-        return f"Task for {self.category.name} by {self.user.full_name()}: {self.category.star_rating} stars."
-    else:
-        return f"Task for {self.category.name} by {self.user.full_name()}"
 
-def get_tasks():
-    tasks = Task.query.all()
-    return tasks
-
-def get_completed_tasks(tasks):
-    completed_tasks = [task for task in tasks if task.completed]
-    return completed_tasks
-
+    def __repr__(self):
+        return f"Task: {self.id} Rate: {self.rating}"
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
@@ -50,19 +36,23 @@ class User(Base):
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
     
-    def favorite_category(self):
-        if not self.tasks:
-            return None
-        return max(self.tasks, key=lambda r: r.category.star_rating).category
     
-    def add_task(self, category, rating):
-        task = Task(title='New Tas', user=self, Category=category)
-        session.add(Task)
-        session.commit()
+    def __repr__(self):
+        return f"User: {self.id} Name: {self.first_name} {self.last_name}"
+    
+    # def favorite_category(self):
+    #     if not self.tasks:
+    #         return None
+    #     return max(self.tasks, key=lambda r: r.category.star_rating).category
+    
+    # def add_task(self, category, rating):
+    #     task = Task(title='New Tas', user=self, Category=category)
+    #     session.add(Task)
+    #     session.commit()
 
-    def delete_tasks(self, category):
-        session.query(Task).filter(Task.user == self, Task.category == category).delete()
-        session.commit()
+    # def delete_tasks(self, category):
+    #     session.query(Task).filter(Task.user == self, Task.category == category).delete()
+    #     session.commit()
 
 
 class Category(Base):
@@ -72,42 +62,7 @@ class Category(Base):
     star_rating = Column(Integer)  # Add star_rating attribut
     tasks = relationship('Task', back_populates='category')
 
-    @classmethod
-    def fanciest(cls):
-        return session.query(cls).order_by(cls.price.desc()).first()
-    
-    def all_tasks(self):
-        return [task.full_task() for task in self.tasks]
+    def __repr__(self):
+        return f"Category: {self.id} Name: {self.name}"
 
 
-
-@click.group()
-def cli():
-    pass
-
-@cli.command()
-def create_task():
-    task_title = click.prompt("Enter task title")
-    category_name = click.prompt("Enter category name")
-    rating = click.prompt("Enter star rating", type=int)
-    
-    # Create category
-    category = Category(name=category_name, star_rating=rating)
-    session.add(category)
-    session.commit()
-
-     # Create user
-    user = User(first_name='John', last_name='Doe')
-    session.add(user)
-    session.commit()
-
-    # Create task
-    task = Task(title=task_title, user=user, category=category)
-    session.add(task)
-    session.commit()
-    
-    click.echo("Task created successfully!")
-
-
-    if __name__ == "__main__":
-      create_task()
