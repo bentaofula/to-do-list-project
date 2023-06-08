@@ -1,15 +1,16 @@
 import os
 import sys
-
-sys.path.append(os.getcwd)
-
+import click
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.orm import declarative_base
+
+sys.path.append(os.getcwd)
 
 Base = declarative_base()
 
-engine = create_engine('sqlite:///new_todo.db')
+engine = create_engine('sqlite:///new_todo_test.db')
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -24,13 +25,12 @@ class Task(Base):
 
     user = relationship('User', back_populates='tasks')
     category = relationship('Category', back_populates='tasks')
+def full_task(self):
+    if self.category.star_rating:
+        return f"Task for {self.category.name} by {self.user.full_name()}: {self.category.star_rating} stars."
+    else:
+        return f"Task for {self.category.name} by {self.user.full_name()}"
 
-    def full_task(self):
-        def full_task(self):
-         if self.category.star_rating:
-            return f"Task for {self.category.name} by {self.user.full_name()}: {self.category.star_rating} stars."
-         else:
-            return f"Task for {self.category.name} by {self.user.full_name()}"
 def get_tasks():
     tasks = Task.query.all()
     return tasks
@@ -38,10 +38,6 @@ def get_tasks():
 def get_completed_tasks(tasks):
     completed_tasks = [task for task in tasks if task.completed]
     return completed_tasks
-
-categories = ['Work', 'Personal', 'Shopping']
-
-
 
 class User(Base):
     __tablename__ = 'users'
@@ -60,12 +56,12 @@ class User(Base):
         return max(self.tasks, key=lambda r: r.category.star_rating).category
     
     def add_task(self, category, rating):
-        review = Task(user=self, Category=category, star_rating=rating)
+        task = Task(title='New Tas', user=self, Category=category)
         session.add(Task)
         session.commit()
 
     def delete_tasks(self, category):
-        session.query(Task).filter(Task.customer == self, Task.category == category).delete()
+        session.query(Task).filter(Task.user == self, Task.category == category).delete()
         session.commit()
 
 
@@ -82,3 +78,36 @@ class Category(Base):
     
     def all_tasks(self):
         return [task.full_task() for task in self.tasks]
+
+
+
+@click.group()
+def cli():
+    pass
+
+@cli.command()
+def create_task():
+    # task_title = click.prompt("Enter task title")
+    # category_name = click.prompt("Enter category name")
+    # rating = click.prompt("Enter star rating", type=int)
+    
+    # # Create category
+    # category = Category(name=category_name, star_rating=rating)
+    # session.add(category)
+    # session.commit()
+
+    #  # Create user
+    # user = User(first_name='John', last_name='Doe')
+    # session.add(user)
+    # session.commit()
+
+    # # Create task
+    # task = Task(title=task_title, user=user, category=category)
+    # session.add(task)
+    # session.commit()
+    
+    # click.echo("Task created successfully!")
+
+
+ if __name__ == "__main__":
+  create_task()

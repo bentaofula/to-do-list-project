@@ -1,8 +1,8 @@
-"""Add star_rating column to categories table
+"""Create table tasks
 
-Revision ID: 133fec5fd2f3
-Revises: 4c03da255b74
-Create Date: 2023-06-08 02:36:24.886260
+Revision ID: 80d1c750cf12
+Revises: 6fb6f08b5897
+Create Date: 2023-06-08 18:29:41.244779
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '133fec5fd2f3'
-down_revision = '4c03da255b74'
+revision = '80d1c750cf12'
+down_revision = '6fb6f08b5897'
 branch_labels = None
 depends_on = None
 
