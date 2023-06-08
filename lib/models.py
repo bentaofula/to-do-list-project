@@ -87,27 +87,27 @@ def cli():
 
 @cli.command()
 def create_task():
-    # task_title = click.prompt("Enter task title")
-    # category_name = click.prompt("Enter category name")
-    # rating = click.prompt("Enter star rating", type=int)
+    task_title = click.prompt("Enter task title")
+    category_name = click.prompt("Enter category name")
+    rating = click.prompt("Enter star rating", type=int)
     
-    # # Create category
-    # category = Category(name=category_name, star_rating=rating)
-    # session.add(category)
-    # session.commit()
+    # Create category
+    category = Category(name=category_name, star_rating=rating)
+    session.add(category)
+    session.commit()
 
-    #  # Create user
-    # user = User(first_name='John', last_name='Doe')
-    # session.add(user)
-    # session.commit()
+     # Create user
+    user = User(first_name='John', last_name='Doe')
+    session.add(user)
+    session.commit()
 
-    # # Create task
-    # task = Task(title=task_title, user=user, category=category)
-    # session.add(task)
-    # session.commit()
+    # Create task
+    task = Task(title=task_title, user=user, category=category)
+    session.add(task)
+    session.commit()
     
-    # click.echo("Task created successfully!")
+    click.echo("Task created successfully!")
 
 
- if __name__ == "__main__":
-  create_task()
+    if __name__ == "__main__":
+      create_task()
