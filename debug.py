@@ -15,31 +15,13 @@ import ipdb
 
 class Task(Base):
     __tablename__ = 'tasks'
-    id = Column(Integer, primary_key=True)
-    title = Column(String)
+    id = Column(Integer(), primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
-    category_id = Column(Integer, ForeignKey('categories.id'))
+    category_id = Column(Integer(), ForeignKey('categories.id'))
 
-    user = relationship('User', back_populates='tasks')
-    category = relationship('Category', back_populates='tasks')
 
-def __repr__(self):
-        return f"Task: {self.id} Rate: {self.rating}" 
-
-def full_task(self):
-    if self.category.star_rating:
-        return f"Task for {self.category.name} by {self.user.full_name()}: {self.category.star_rating} stars."
-    else:
-        return f"Task for {self.category.name} by {self.user.full_name()}"
-
-def get_tasks():
-    tasks = Task.query.all()
-    return tasks
-
-def get_completed_tasks(tasks):
-    completed_tasks = [task for task in tasks if task.completed]
-    return completed_tasks
-
+    def __repr__(self):
+        return f"Task: {self.id} Rate: {self.rating}"
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
@@ -54,6 +36,7 @@ class User(Base):
     def __repr__(self):
         return f"User: {self.id} Name: {self.first_name} {self.last_name}"
 
+
 class Category(Base):
     __tablename__ = 'categories'
     id = Column(Integer, primary_key=True)
@@ -61,19 +44,15 @@ class Category(Base):
     star_rating = Column(Integer)  # Add star_rating attribut
     tasks = relationship('Task', back_populates='category')
 
-def __repr__(self):
+    def __repr__(self):
         return f"Category: {self.id} Name: {self.name}"
-
-
     
 
 def debug():
-    # Create instances of Task, User, and Category
     task = Task(title='Debug Task')
     user = User(first_name='Mary', last_name='Jean')
     category = Category(name='Debug Category', star_rating=5)
 
-    # Add instances to the session
     session.add(task)
     session.add(user)
     session.add(category)
