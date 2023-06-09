@@ -1,90 +1,85 @@
-from sqlalchemy.orm import sessionmaker
-from models import Task, User, Category, engine
-import click
+#!/usr/bin/env python3
 
+import click
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from models import Task, User, task_user
+
+
+engine = create_engine('sqlite:///new_todo_test.db', echo=True)
 Session = sessionmaker(bind=engine)
 session = Session()
 
 @click.group()
-def cli():
-    """CLI for managing tasks in the todo list"""
+def func():
     pass
 
 @click.command()
-@click.argument('title')
-@click.argument('user_id', type=int)
-@click.argument('category_id', type=int)
-def create_task(title, user_id, category_id):
-    """Create a new task"""
-    task = Task(title=title, user_id=user_id, category_id=category_id)
-    session.add(task)
-    session.commit()
-    click.echo('Task created successfully.')
-
-@click.command()
-@click.argument('user_id', type=int)
-def list_tasks(user_id):
-    """List tasks for a specific user"""
-    tasks = session.query(Task).filter(Task.user_id == user_id).all()
+def list_tasks():
+    tasks = session.query(Task).all()
     if tasks:
-        click.echo(f'Tasks for User ID {user_id}:')
+        click.echo("All Tasks:")
         for task in tasks:
-            click.echo(f'- {task.title}')
+            t = (task.id, task.title, task.user_id)
+            click.echo(f"Task: {t}")
     else:
-        click.echo(f'No tasks found for User ID {user_id}.')
+        click.echo("No tasks found") 
 
 @click.command()
 def list_users():
-    """List all users"""
     users = session.query(User).all()
     if users:
-        click.echo('Users:')
+        click.echo("All Users:")
         for user in users:
-            click.echo(f'- User ID: {user.id}, Name: {user.name}')
+            u = {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email
+            }
+            click.echo(u)
     else:
-        click.echo('No users found.')
+        click.echo("No users found")
 
 @click.command()
-def list_categories():
-    """List all categories"""
-    categories = session.query(Category).all()
-    if categories:
-        click.echo('Categories:')
-        for category in categories:
-            click.echo(f'- Category ID: {category.id}, Name: {category.name}')
-    else:
-        click.echo('No categories found.')
+@click.option("--title", prompt="Enter the task title", help="Task title")
+@click.option("--user-id", prompt="Enter the user ID", help="User ID")
+def add_task(title, user_id):
+    user_id = int(user_id)
+    user = session.query(User).filter(User.id == user_id).first()
+    if not user:
+        click.echo("User not found")
+        return
+
+    task = Task(title=title, user_id=user_id)
+    session.add(task)
+    session.commit()
+    click.echo("Task added successfully")
 
 @click.command()
-@click.argument('task_id', type=int)
-def complete_task(task_id):
-    """Mark a task as completed"""
-    task = session.query(Task).get(task_id)
-    if task:
-        task.completed = True
-        session.commit()
-        click.echo('Task marked as completed.')
-    else:
-        click.echo(f'Task with ID {task_id} not found.')
-
-@click.command()
-@click.argument('task_id', type=int)
+@click.option("--task-id", prompt="Enter the task ID", help="Task ID")
 def delete_task(task_id):
-    """Delete a task"""
-    task = session.query(Task).get(task_id)
+    task_id = int(task_id)
+    task = session.query(Task).filter(Task.id == task_id).first()
     if task:
         session.delete(task)
         session.commit()
-        click.echo('Task deleted successfully.')
+        click.echo("Task deleted successfully")
     else:
-        click.echo(f'Task with ID {task_id} not found.')
+        click.echo("Task not found")
 
-cli.add_command(create_task)
-cli.add_command(list_tasks)
-cli.add_command(list_users)
-cli.add_command(list_categories)
-cli.add_command(complete_task)
-cli.add_command(delete_task)
+@click.command()
+def recent_tasks():
+    task = session.query(Task).order_by(Task.id.desc()).first()
+    if task:
+        click.echo(f"Recently added task: {task}")
+    else:
+        click.echo("No tasks found")
+
+func.add_command(list_tasks)
+func.add_command(list_users)
+func.add_command(add_task)
+func.add_command(delete_task)
+func.add_command(recent_tasks)
 
 if __name__ == '__main__':
-    cli()
+    func()
