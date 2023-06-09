@@ -1,8 +1,4 @@
-import os
-import sys
 import ipdb
-
-sys.path.append(os.getcwd)
 
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
@@ -58,6 +54,7 @@ class Category(Base):
 
 # create a user object
 user1 = User(first_name='Mary', last_name='Jean', name='Mary Jean')
+
 #  Create a category object
 category1 = Category(name='Category 1', star_rating=5)
 category2 = Category(name='Category 2', star_rating=50)

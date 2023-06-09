@@ -6,12 +6,6 @@ from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
-# engine = create_engine('sqlite:///new_todo_test.db')
-# Base.metadata.create_all(engine)
-# Session = sessionmaker(bind=engine)
-# session = Session()
-
-# Define the task_user table
 task_user = Table('task_user', Base.metadata,
     Column('task_id', Integer, ForeignKey('tasks.id')),
     Column('user_id', Integer, ForeignKey('users.id'))
